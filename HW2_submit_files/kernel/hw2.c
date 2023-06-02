@@ -32,7 +32,7 @@ asmlinkage long sys_get_ancestor_sum(void) { ///336
 asmlinkage long sys_get_heaviest_descendant(void) { ///337
     long max_weight = -1;
     long max_weight_pid = 0;
-    if(list_empty())
+    if(list_empty())///what to put in here?
     return sys_get_heaviest_descendant_aux(max_weight, max_pid);
 }
 
