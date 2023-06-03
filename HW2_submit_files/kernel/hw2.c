@@ -37,21 +37,20 @@ asmlinkage long sys_get_heaviest_descendant(void) { ///337
     return sys_get_heaviest_descendant_aux(max_weight, max_pid);
 }
 
-asmlinkage struct task_struct* sys_get_heaviest_descendant_aux(struct task_struct* task, long max_weight, long max_pid) { ///337
+asmlinkage struct task_struct* sys_get_heaviest_descendant_aux(struct task_struct* task) { ///337
+    if(list_empty(&(task->children))
+        return NULL;
     struct list_head* head = &(task->children);
     struct list_head* curr_node;
     struct task_struct* curr_task;
 
     list_for_each(curr_node, head){
         curr_task = list_entry(curr_node, struct task_struct, sibling);
-        struct task_struct* max_node_in_subtree = sys_get_heaviest_descendant_aux(curr_task->children);
-
-        if (curr_task->weight > max_weight || (curr_task->weight == max_weight && curr_task->pid < max_pid)){
-            max_weight = curr_task->weight;
-            max_pid = curr_task->pid;
-        }
-
-
+        struct task_struct* max_task_in_subtree = sys_get_heaviest_descendant_aux(curr_task->children);
+        if (curr_task->weight > max_task_in_subtree->weight || (curr_task->weight == max_task_in_subtree->weight && curr_task->pid < max_task_in_subtree->pid))
+            max_task_in_subtree = curr_task;
+        if (max_task->weight > max_task_in_subtree->weight || (max_task->weight == max_task_in_subtree->weight && max_task->pid < max_task_in_subtree->pid))
+            max_task = max_task_in_subtree;
     }
 }
 
