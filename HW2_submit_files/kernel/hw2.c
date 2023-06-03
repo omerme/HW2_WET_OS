@@ -32,10 +32,29 @@ asmlinkage long sys_get_ancestor_sum(void) { ///336
 asmlinkage long sys_get_heaviest_descendant(void) { ///337
     long max_weight = -1;
     long max_weight_pid = 0;
-    if(list_empty())///what to put in here?
+    if(list_empty(&(current->children))
+        return -ECHILD;
     return sys_get_heaviest_descendant_aux(max_weight, max_pid);
 }
 
-asmlinkage long sys_get_heaviest_descendant_aux(long max_weight, max_pid) { ///337
-    list_for_each()
+asmlinkage struct task_struct* sys_get_heaviest_descendant_aux(struct task_struct* task, long max_weight, long max_pid) { ///337
+    struct list_head* head = &(task->children);
+    struct list_head* curr_node;
+    struct task_struct* curr_task;
+
+    list_for_each(curr_node, head){
+        curr_task = list_entry(curr_node, struct task_struct, sibling);
+        struct task_struct* max_node_in_subtree = sys_get_heaviest_descendant_aux(curr_task->children);
+
+        if (curr_task->weight > max_weight || (curr_task->weight == max_weight && curr_task->pid < max_pid)){
+            max_weight = curr_task->weight;
+            max_pid = curr_task->pid;
+        }
+
+
+    }
 }
+
+          0
+     2         1
+ 7      0    7    0
